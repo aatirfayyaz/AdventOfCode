@@ -57,7 +57,7 @@ int main() {
             if(isdigit(buffer[i])) {
                 
                 if (i < firstPosition) {
-                    firstPosition = i;
+                    firstPosition = i;;
                     firstNumber = buffer[i] - 48;
                     // printf("Lowest index position found to be %i, and highest found to be %i\n", firstPosition, lastPosition);
                 };
