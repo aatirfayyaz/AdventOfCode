@@ -75,6 +75,11 @@ int main() {
         };
 
         printf("First number found to be %i @ %i, and last found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
+        int subtotal;
+        subtotal = (firstNumber) * 10 + (lastNumber);
+        // printf("SubTotal = %d\n", subtotal);
+        total += subtotal;
+        // printf("Total = %d\n", total);
 
         // i = size;
 
