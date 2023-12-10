@@ -10,7 +10,7 @@ int main() {
     fptr = fopen("data.txt", "r");
     
     // Storing the content of the file in a buffer
-    char buffer[128];
+    char buffer[256];
     int prevgameID = 0;
     int total = 0;
 
@@ -18,9 +18,16 @@ int main() {
     char *arr[] = { "red", "blue", "green"};
 
     // Reading the content of the file, line by line
-    while(fgets(buffer, 128, fptr)) {
+    while(fgets(buffer, 256, fptr)) {
 
-        int gameID = buffer[5] - 48;
+        int gameID;
+        if ( isdigit(buffer[7]) ) {
+            gameID = 100;
+        } else if ( isdigit(buffer[6]) ) {
+            gameID = ( buffer[5] - 48 ) * 10 + ( buffer[6] - 48 );
+        } else {
+            gameID = ( buffer[5] - 48 );
+        };
         int maxRed = 0, maxBlue = 0, maxGreen = 0;
         
         // printf("Currently reading: %s\n", buffer);
@@ -65,12 +72,15 @@ int main() {
             };
         };
 
-        if (maxRed <= 12 && maxBlue <= 13 && maxGreen <= 14) {
+        if (maxRed <= 12 && maxGreen <= 13 && maxBlue <= 14) {
             if (prevgameID != gameID) {
-                printf("Adding gameID %i to total %i\n", gameID, total);
                 prevgameID = gameID;
                 total += gameID;
+                // printf("Adding gameID %i to total %i\n", gameID, total);
                 };
+        }
+        else {
+            // printf("Game ID %i does not qualify\n", gameID);
         };
                 
         };
