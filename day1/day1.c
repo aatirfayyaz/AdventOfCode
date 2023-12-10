@@ -6,26 +6,26 @@ int main() {
 
     FILE *fptr;
 
-    // Open a file in read mode
+    // Opening data file in read mode
     fptr = fopen("data.txt", "r");
     
-    // Store the content of the file in a buffer
+    // Storing the content of the file in a buffer
     char buffer[128];
     int total = 0;
 
     // Array for spelled out numbers
     char *arr[] = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
 
-    // Read the content of the file, line by line
+    // Reading the content of the file, line by line
     while(fgets(buffer, 128, fptr)) {
         
         // printf("Currently reading: %s\n", buffer);
         int size = strlen(buffer);
-        int i = 0;
         int firstPosition = size;
         int lastPosition = 0;
         int firstNumber, lastNumber;
 
+        // Looping through spelled out digits array     
         for (int i = 0; i < 9 ; i++) {
             
             const char *tmp = buffer;
@@ -37,11 +37,11 @@ int main() {
                 
                 if (result) {
                     
-                    printf("Found a %s\n", arr[i]);
+                    // printf("Found a %s\n", arr[i]);
                     int position = tmp - buffer;
                     // int substringLength = size - position;
 
-                    printf("position %i\n", position);
+                    // printf("position %i\n", position);
 
                     if (position < firstPosition) {
                         firstPosition = position;
@@ -49,44 +49,37 @@ int main() {
                     }
                     
                     if (position > lastPosition) {
-                        // printf("tmpPos = %i\n", tmpPos);
                         
-                        // if (tmpPos) { 
-                        //     lastPosition = position + tmpPos;
-                        //     printf("Added to lastPosition @ %i = %i\n", tmpPos, lastPosition);
-                        // }
-                        // else { 
-                            lastPosition = position;
-                        // };
-                        
+                        lastPosition = position;
                         lastNumber = i + 1;
                     }
                 
-                    printf("Lowest number found to be %i @ %i, and highest found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
+                    // printf("Lowest number found to be %i @ %i, and highest found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
 
                 };
                 
-                // tmpPos += strlen(arr[i]);
                 tmp += strlen(arr[i]);
 
             };
                         
         };
 
+        int i = 0;
+        
         while (i <= size) {
 
             if(isdigit(buffer[i])) {
                 
                 if (i < firstPosition) {
-                    firstPosition = i;;
+                    firstPosition = i;
                     firstNumber = buffer[i] - 48;
-                    // printf("Lowest index position found to be %i, and highest found to be %i\n", firstPosition, lastPosition);
+                    printf("Lowest index position found to be %i with val: %i\n", firstPosition, firstNumber);
                 };
 
-                if (i > lastPosition) {
+                if (i >= lastPosition) {
                     lastPosition = i;
                     lastNumber = buffer[i] - 48;
-                    // printf("Lowest index position found to be %i, and highest found to be %i\n", firstPosition, lastPosition);
+                    printf("Highest index found to be %i with val: %i\n", lastPosition, lastNumber);
                 };
                 
                 // printf("First number is %c\n", firstNumber);
@@ -95,39 +88,19 @@ int main() {
             i += 1;
         };
 
-        printf("First number found to be %i @ %i, and last found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
         int subtotal;
         subtotal = (firstNumber) * 10 + (lastNumber);
+        
         total += subtotal;
-        printf("SubTotal = %i and RunningTotal = %i\n", subtotal, total);
 
-        // i = size;
+        // printf("SubTotal = %i and RunningTotal = %i\n", subtotal, total);
+        printf("For: %s First number = %i @ %i, and last = %i @ %i; so sub = %i & Total = %i\n", buffer, firstNumber, firstPosition, lastNumber, lastPosition, subtotal, total);
 
-        // while (i >= 0) {
-
-        //     if(isdigit(buffer[i])) {
-        //         lastNumber = buffer[i];
-        //         // printf("Last number is %c\n", lastNumber);
-                
-        //         // printf("First and last numbers are %c %c\n", firstNumber, lastNumber);
-        //         int subtotal;
-        //         subtotal = (firstNumber - 48) *10 + (lastNumber - 48);
-        //         // printf("SubTotal = %d\n", subtotal);
-        //         total += subtotal;
-        //         // printf("Total = %d\n", total);
-
-        //         break;
-        //     };
-            
-        //     i -= 1;
-
-        // };
-
-    };
+        };
 
     printf("Total = %d\n", total);
 
-    // Close the file
+    // Closing file
     fclose(fptr);
 
     return 0;
