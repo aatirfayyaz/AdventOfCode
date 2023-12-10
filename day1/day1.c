@@ -28,31 +28,52 @@ int main() {
 
         for (int i = 0; i < 9 ; i++) {
             
-            char *result = strstr(buffer, arr[i]);
-            
-            if (result) {
-                
-                // printf("Found a %s\n", arr[i]);
-                int position = result - buffer;
-                int substringLength = size - position;
+            const char *tmp = buffer;
+            int tmpPos = 0;
 
-                // printf("position %i\n", position);
-                if (position < firstPosition) {
-                    firstPosition = position;
-                    firstNumber = i + 1;
-                }
-                if (position > lastPosition) {
-                    lastPosition = position;
-                    lastNumber = i + 1;
-                }
+            while( (tmp = strstr(tmp, arr[i])) != NULL ) {
             
-                // printf("Lowest number found to be %i @ %i, and highest found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
+                char *result = strstr(tmp, arr[i]);
+                
+                if (result) {
+                    
+                    printf("Found a %s\n", arr[i]);
+                    int position = tmp - buffer;
+                    // int substringLength = size - position;
+
+                    printf("position %i\n", position);
+
+                    if (position < firstPosition) {
+                        firstPosition = position;
+                        firstNumber = i + 1;
+                    }
+                    
+                    if (position > lastPosition) {
+                        // printf("tmpPos = %i\n", tmpPos);
+                        
+                        // if (tmpPos) { 
+                        //     lastPosition = position + tmpPos;
+                        //     printf("Added to lastPosition @ %i = %i\n", tmpPos, lastPosition);
+                        // }
+                        // else { 
+                            lastPosition = position;
+                        // };
+                        
+                        lastNumber = i + 1;
+                    }
+                
+                    printf("Lowest number found to be %i @ %i, and highest found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
+
+                };
+                
+                // tmpPos += strlen(arr[i]);
+                tmp += strlen(arr[i]);
 
             };
                         
         };
 
-        while (i < size) {
+        while (i <= size) {
 
             if(isdigit(buffer[i])) {
                 
@@ -77,9 +98,8 @@ int main() {
         printf("First number found to be %i @ %i, and last found to be %i @ %i\n", firstNumber, firstPosition, lastNumber, lastPosition);
         int subtotal;
         subtotal = (firstNumber) * 10 + (lastNumber);
-        // printf("SubTotal = %d\n", subtotal);
         total += subtotal;
-        // printf("Total = %d\n", total);
+        printf("SubTotal = %i and RunningTotal = %i\n", subtotal, total);
 
         // i = size;
 
