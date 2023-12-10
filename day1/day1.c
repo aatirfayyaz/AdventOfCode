@@ -104,4 +104,4 @@ int main() {
     fclose(fptr);
 
     return 0;
-}
+};
