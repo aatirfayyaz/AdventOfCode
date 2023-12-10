@@ -72,16 +72,19 @@ int main() {
             };
         };
 
-        if (maxRed <= 12 && maxGreen <= 13 && maxBlue <= 14) {
-            if (prevgameID != gameID) {
-                prevgameID = gameID;
-                total += gameID;
-                // printf("Adding gameID %i to total %i\n", gameID, total);
-                };
-        }
-        else {
-            // printf("Game ID %i does not qualify\n", gameID);
-        };
+        // if (maxRed <= 12 && maxGreen <= 13 && maxBlue <= 14) {
+        //     if (prevgameID != gameID) {
+        //         prevgameID = gameID;
+        //         total += gameID;
+        //         // printf("Adding gameID %i to total %i\n", gameID, total);
+        //         };
+        // }
+        // else {
+        //     // printf("Game ID %i does not qualify\n", gameID);
+        // };
+
+        int power = maxRed * maxGreen * maxBlue;
+        total += power;
                 
         };
 
