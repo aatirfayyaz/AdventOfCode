@@ -7,65 +7,48 @@ const int columns = 10;
 
 int checkSymbol(int i, int j, int size, char fullFile[rows][columns]) {
     
-    if (fullFile[i-1][j-1] != '.' && !isdigit(fullFile[i-1][j-1])) {
-        printf("Symbol: %c", fullFile[i-1][j-1]);
-        return 1;
-    }
-    else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j])) {
-        printf("Symbol: %c", fullFile[i-1][j]);
-        return 1;
-    }
-    else if (fullFile[i][j-1] != '.' && !isdigit(fullFile[i][j-1])) {
-        printf("Symbol: %c", fullFile[i][j-1]);
-        return 1;
-    }
-    else if (fullFile[i+1][j-1] != '.' && !isdigit(fullFile[i+1][j-1])) {
-        return 1;
-    }
-    else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j])) {
-        return 1;
-    }
-    else if (fullFile[i-1][j+1] != '.' && !isdigit(fullFile[i-1][j+1])) {
-        return 1;
-    }
-    else if (fullFile[i+1][j+1] != '.' && !isdigit(fullFile[i+1][j+1])) {
-        return 1;
-    }
+    for (int x = 0; x < size; x++) {
+
+        if (fullFile[i-1][j-1] != '.' && !isdigit(fullFile[i-1][j-1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j-1], i, j);
+            return 1;
+        }
+        else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j], i, j);
+            return 1;
+        }
+        else if (fullFile[i][j-1] != '.' && !isdigit(fullFile[i][j-1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i][j-1], i, j);
+            return 1;
+        }
+        else if (fullFile[i+1][j-1] != '.' && !isdigit(fullFile[i+1][j-1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j-1], i, j);
+            return 1;
+        }
+        else if (fullFile[i+1][j] != '.' && !isdigit(fullFile[i+1][j] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j], i, j);
+            return 1;
+        }
+        else if (fullFile[i-1][j+1] != '.' && !isdigit(fullFile[i-1][j+1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j+1], i, j);
+            return 1;
+        }
+        else if (fullFile[i+1][j+1] != '.' && !isdigit(fullFile[i+1][j+1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j+1], i, j);
+            return 1;
+        }
+        else if (fullFile[i][j+1] != '.' && !isdigit(fullFile[i][j+1] && fullFile[i-1][j-1] != '\n')) {
+            printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i][j+1], i, j);
+            return 1;
+        }
+        
+        i++;
+        j++;
+
+    };
     
-    if (size == 1) {
-        if (fullFile[i][j+1] != '.' && !isdigit(fullFile[i][j+1])) {
-            return 1;
-        }
-    }
-    else if (size == 2) {
-        if (fullFile[i-1][j+2] != '.' && !isdigit(fullFile[i-1][j+2])) {
-            return 1;
-        }
-        else if (fullFile[i+1][j+2] != '.' && !isdigit(fullFile[i+1][j+2])) {
-            return 1;
-        }
-        else if (fullFile[i][j+2] != '.' && !isdigit(fullFile[i][j+2])) {
-            return 1;
-        }
-    }
-    else if (size == 3) {
-        if (fullFile[i-1][j+2] != '.' && !isdigit(fullFile[i-1][j+2])) {
-            return 1;
-        }
-        else if (fullFile[i+1][j+2] != '.' && !isdigit(fullFile[i+1][j+2])) {
-            return 1;
-        }
-        else if (fullFile[i-1][j+3] != '.' && !isdigit(fullFile[i-1][j+3])) {
-            return 1;
-        }
-        else if (fullFile[i+1][j+3] != '.' && !isdigit(fullFile[i+1][j+3])) {
-            return 1;
-        }
-        else if (fullFile[i][j+3] != '.' && !isdigit(fullFile[i][j+3])) {
-            return 1;
-        }
-    }
     return 0;
+
 };
 
 int main(int argc, char **argv) {
@@ -118,7 +101,7 @@ int main(int argc, char **argv) {
                 continue;
             };
 
-            // printf("partNum: %i\n", partNum);
+            printf("partNum: %i\n", partNum);
 
 
 
