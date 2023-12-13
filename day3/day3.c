@@ -2,6 +2,72 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+const int rows = 10;
+const int columns = 10;
+
+int checkSymbol(int i, int j, int size, char fullFile[rows][columns]) {
+    
+    if (fullFile[i-1][j-1] != '.' && !isdigit(fullFile[i-1][j-1])) {
+        printf("Symbol: %c", fullFile[i-1][j-1]);
+        return 1;
+    }
+    else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j])) {
+        printf("Symbol: %c", fullFile[i-1][j]);
+        return 1;
+    }
+    else if (fullFile[i][j-1] != '.' && !isdigit(fullFile[i][j-1])) {
+        printf("Symbol: %c", fullFile[i][j-1]);
+        return 1;
+    }
+    else if (fullFile[i+1][j-1] != '.' && !isdigit(fullFile[i+1][j-1])) {
+        return 1;
+    }
+    else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j])) {
+        return 1;
+    }
+    else if (fullFile[i-1][j+1] != '.' && !isdigit(fullFile[i-1][j+1])) {
+        return 1;
+    }
+    else if (fullFile[i+1][j+1] != '.' && !isdigit(fullFile[i+1][j+1])) {
+        return 1;
+    }
+    
+    if (size == 1) {
+        if (fullFile[i][j+1] != '.' && !isdigit(fullFile[i][j+1])) {
+            return 1;
+        }
+    }
+    else if (size == 2) {
+        if (fullFile[i-1][j+2] != '.' && !isdigit(fullFile[i-1][j+2])) {
+            return 1;
+        }
+        else if (fullFile[i+1][j+2] != '.' && !isdigit(fullFile[i+1][j+2])) {
+            return 1;
+        }
+        else if (fullFile[i][j+2] != '.' && !isdigit(fullFile[i][j+2])) {
+            return 1;
+        }
+    }
+    else if (size == 3) {
+        if (fullFile[i-1][j+2] != '.' && !isdigit(fullFile[i-1][j+2])) {
+            return 1;
+        }
+        else if (fullFile[i+1][j+2] != '.' && !isdigit(fullFile[i+1][j+2])) {
+            return 1;
+        }
+        else if (fullFile[i-1][j+3] != '.' && !isdigit(fullFile[i-1][j+3])) {
+            return 1;
+        }
+        else if (fullFile[i+1][j+3] != '.' && !isdigit(fullFile[i+1][j+3])) {
+            return 1;
+        }
+        else if (fullFile[i][j+3] != '.' && !isdigit(fullFile[i][j+3])) {
+            return 1;
+        }
+    }
+    return 0;
+};
+
 int main(int argc, char **argv) {
 
     FILE *fptr;
@@ -9,8 +75,8 @@ int main(int argc, char **argv) {
     // Opening data file in read mode
     fptr = fopen("data.txt", "r");
 
-    const int rows = 10;
-    const int columns = 10;
+    // const int rows = 140;
+    // const int columns = 10;
 
     char buffer[columns];
     char fullFile[rows][columns];
@@ -24,35 +90,66 @@ int main(int argc, char **argv) {
         };
     };
 
+    int partNum = 0;
+    int total = 0;
+
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
-            if ( !isdigit(fullFile[i][j]) && fullFile[i][j] != 46 && fullFile[i][j] != 10) {
-                    if ( i > 0 && i < rows && j > 0 && j < columns) {
-                        printf("From %i %i at i-1, j: %c\n", i, j, fullFile[i-1][j]);
-                        printf("From %i %i at i+1, j: %c\n", i, j, fullFile[i+1][j]);
-                        printf("From %i %i at i-1, j-1: %c\n", i, j, fullFile[i-1][j-1]);
-                        printf("From %i %i at i+1, j-1: %c\n", i, j, fullFile[i+1][j-1]);
-                        printf("From %i %i at i, j-1: %c\n", i, j, fullFile[i][j-1]);
-                        printf("From %i %i at i, j+1: %c\n", i, j, fullFile[i][j+1]);
-                        printf("From %i %i at i-1, j+1: %c\n", i, j, fullFile[i-1][j+1]);
-                        printf("From %i %i at i+1, j+1: %c\n", i, j, fullFile[i+1][j+1]);
+            if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1]) && isdigit(fullFile[i][j+2])) {
+                partNum = (fullFile[i][j] - 48) * 100 + (fullFile[i][j+1] - 48) * 10 + (fullFile[i][j+2] - 48);
+                if(checkSymbol(i, j, 3, fullFile)) {
+                    total += partNum;
+                };
+                j += 2;
+            } else if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1])) {
+                partNum = (fullFile[i][j] - 48) * 10 + (fullFile[i][j+1] - 48);
+                if(checkSymbol(i, j, 2, fullFile)) {
+                    total += partNum;
+                };
+                j += 1;
+            } else if (fullFile[i][j] > 48 && fullFile[i][j] != '.') {
+                // printf("%c\n", fullFile[i][j]);
+                partNum = (fullFile[i][j] - 48);
+                if(checkSymbol(i, j, 1, fullFile)) {
+                    total += partNum;
+                };
+            } else {
+                partNum = 0;
+                continue;
+            };
 
-                    }
-                    else if ( i == 0 && j > 0 && j < columns) {}
-                    else if ( i == rows && j > 0 && j < columns) {}
-                    else if ( i > 0 && i < rows && j == 0) {}
-                    else if ( i > 0 && i < rows && j == columns) {}
-                    else if ( i == 0 && j == 0 ) {}
-                    else if ( i == 0 && j == columns) {}
-                    else if ( i == rows && j == 0) {}
-                    else if ( i == rows && j == columns) {}
-                    else { printf("You've missed a case!"); }
-            } 
-        }
-        
-        // printf("\n");
+            // printf("partNum: %i\n", partNum);
+
+
+
+
+            // if ( !isdigit(fullFile[i][j]) && fullFile[i][j] != 46 && fullFile[i][j] != 10) {
+            //         if ( i > 0 && i < rows && j > 0 && j < columns) {
+            //             printf("From %i %i at i-1, j: %c\n", i, j, fullFile[i-1][j]);
+            //             printf("From %i %i at i+1, j: %c\n", i, j, fullFile[i+1][j]);
+            //             printf("From %i %i at i-1, j-1: %c\n", i, j, fullFile[i-1][j-1]);
+            //             printf("From %i %i at i+1, j-1: %c\n", i, j, fullFile[i+1][j-1]);
+            //             printf("From %i %i at i, j-1: %c\n", i, j, fullFile[i][j-1]);
+            //             printf("From %i %i at i, j+1: %c\n", i, j, fullFile[i][j+1]);
+            //             printf("From %i %i at i-1, j+1: %c\n", i, j, fullFile[i-1][j+1]);
+            //             printf("From %i %i at i+1, j+1: %c\n", i, j, fullFile[i+1][j+1]);
+
+            //         }
+            //         else if ( i == 0 && j > 0 && j < columns) {}
+            //         else if ( i == rows && j > 0 && j < columns) {}
+            //         else if ( i > 0 && i < rows && j == 0) {}
+            //         else if ( i > 0 && i < rows && j == columns) {}
+            //         else if ( i == 0 && j == 0 ) {}
+            //         else if ( i == 0 && j == columns) {}
+            //         else if ( i == rows && j == 0) {}
+            //         else if ( i == rows && j == columns) {}
+            //         else { printf("You've missed a case!"); }
+
+        };
+
     };
 
+    printf("Total parts near symbols: %i", total);
     fclose(fptr);
 
     return 0;
