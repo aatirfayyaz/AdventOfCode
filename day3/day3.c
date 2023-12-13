@@ -2,42 +2,50 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-const int rows = 10;
-const int columns = 10;
+const int rows = 12;
+const int columns = 12;
 
 int checkSymbol(int i, int j, int size, char fullFile[rows][columns]) {
     
     for (int x = 0; x < size; x++) {
 
-        if (fullFile[i-1][j-1] != '.' && !isdigit(fullFile[i-1][j-1] && fullFile[i-1][j-1] != '\n')) {
+        if (fullFile[i-1][j-1] != '.' && !(isdigit(fullFile[i-1][j-1])) && fullFile[i-1][j-1] != '\n' && fullFile[i-1][j-1] != '\0') {
+            if (i == 0 || j == 0) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j-1], i, j);
             return 1;
         }
-        else if (fullFile[i-1][j] != '.' && !isdigit(fullFile[i-1][j] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i-1][j] != '.' && !(isdigit(fullFile[i-1][j])) && fullFile[i-1][j] != '\n' && fullFile[i-1][j] != '\0') {
+            if (i == 0) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j], i, j);
             return 1;
         }
-        else if (fullFile[i][j-1] != '.' && !isdigit(fullFile[i][j-1] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i][j-1] != '.' && !(isdigit(fullFile[i][j-1])) && fullFile[i][j-1] != '\n' && fullFile[i][j-1] != '\0') {
+            if (j == 0) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i][j-1], i, j);
             return 1;
         }
-        else if (fullFile[i+1][j-1] != '.' && !isdigit(fullFile[i+1][j-1] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i+1][j-1] != '.' && !(isdigit(fullFile[i+1][j-1])) && fullFile[i+1][j-1] != '\n' && fullFile[i+1][j-1] != '\0') {
+            if (i == rows || j == 0) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j-1], i, j);
             return 1;
         }
-        else if (fullFile[i+1][j] != '.' && !isdigit(fullFile[i+1][j] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i+1][j] != '.' && !(isdigit(fullFile[i+1][j])) && fullFile[i+1][j] != '\n' && fullFile[i+1][j] != '\0') {
+            if (i == rows) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j], i, j);
             return 1;
         }
-        else if (fullFile[i-1][j+1] != '.' && !isdigit(fullFile[i-1][j+1] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i-1][j+1] != '.' && !(isdigit(fullFile[i-1][j+1])) && fullFile[i-1][j+1] != '\n' && fullFile[i-1][j+1] != '\0') {
+            if (i == 0 || j == rows) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i-1][j+1], i, j);
             return 1;
         }
-        else if (fullFile[i+1][j+1] != '.' && !isdigit(fullFile[i+1][j+1] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i+1][j+1] != '.' && !(isdigit(fullFile[i+1][j+1])) && fullFile[i+1][j+1] != '\n' && fullFile[i+1][j+1] != '\0') {
+            if (i == rows || j == columns) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i+1][j+1], i, j);
             return 1;
         }
-        else if (fullFile[i][j+1] != '.' && !isdigit(fullFile[i][j+1] && fullFile[i-1][j-1] != '\n')) {
+        else if (fullFile[i][j+1] != '.' && !(isdigit(fullFile[i][j+1])) && fullFile[i][j+1] != '\n' && fullFile[i][j+1] != '\0') {
+            if (j == columns) {return 0;};
             printf("Symbol: %c\n @ i:%i & j: %i", fullFile[i][j+1], i, j);
             return 1;
         }
