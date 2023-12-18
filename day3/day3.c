@@ -33,6 +33,59 @@ int checkSymbol(int i, int j, int size, char fullFile[rows][columns]) {
 
 };
 
+int findNums(int row, int col, char fullFile[rows][columns]){
+    if (isdigit(fullFile[row][col - 1])){
+        if (isdigit(fullFile[row][col - 2])){
+            return ((fullFile[row][col - 2] - 48) * 100 + (fullFile[row][col - 1] - 48) * 10 + (fullFile[row][col] - 48));
+        }
+        else if (isdigit(fullFile[row][col + 1])) {
+            return ((fullFile[row][col - 1] - 48) * 100 + (fullFile[row][col] - 48) * 10 + (fullFile[row][col + 1] - 48));
+        }
+        else {
+            return ((fullFile[row][col - 1] - 48) * 10 + (fullFile[row][col] - 48));
+        }
+    }
+    else if (isdigit(fullFile[row][col + 1])){
+        if (isdigit(fullFile[row][col + 2])){
+            return ((fullFile[row][col] - 48) * 100 + (fullFile[row][col + 1] - 48) * 10 + (fullFile[row][col + 2] - 48));
+        }
+        else {
+            return ((fullFile[row][col] - 48) * 10 + (fullFile[row][col + 1] - 48));
+        }
+    }
+    else {
+        return (fullFile[row][col] - 48);
+    }
+};
+
+int checkDigit(int i, int j, char fullFile[rows][columns]) {
+    int partNum;
+    int gearRatio = 0;
+    int foundOne = 0;
+    for (int r = i - 1; r <= i + 1; ++r) {
+        for (int c = j - 1; c <= j + 1; ++c) {
+            if (isValid(r, c, rows, columns)) {
+                if (isdigit(fullFile[r][c])) {
+                    partNum = findNums(r, c, fullFile);
+                    // printf("partNum = %i\n", partNum);
+                    if (foundOne && gearRatio != partNum) {
+                        // printf("gearRatio = %i\n", gearRatio*partNum);
+                        return gearRatio *= partNum;
+                    }
+                    else {
+                        gearRatio = partNum;
+                        foundOne++;
+                    };
+                };
+            }
+            else {
+                continue;
+            };
+        };
+    };
+    return 0;
+};
+
 int main(int argc, char **argv) {
 
     FILE *fptr;
@@ -56,43 +109,57 @@ int main(int argc, char **argv) {
     int partNum = 0;
     int total = 0;
 
+
+    // Part 1 code
+    //
+    // for (int i = 0; i < rows; i++) {
+    //     for (int j = 0; j < columns; j++) {
+    //         // printf("Checking %c\n", fullFile[i][j]);
+    //         if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1]) && isdigit(fullFile[i][j+2])) {
+    //             partNum = (fullFile[i][j] - 48) * 100 + (fullFile[i][j+1] - 48) * 10 + (fullFile[i][j+2] - 48);
+    //             // printf("Partnum: %i\n", partNum);
+    //             if(checkSymbol(i, j, 3, fullFile)) {
+    //                 total += partNum;
+    //                 // printf("Added partNum: %i to total: %i\n", partNum, total);
+    //             };
+    //             j += 2;
+    //         } else if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1])) {
+    //             partNum = (fullFile[i][j] - 48) * 10 + (fullFile[i][j+1] - 48);
+    //             // printf("Partnum: %i\n", partNum);
+    //             if(checkSymbol(i, j, 2, fullFile)) {
+    //                 total += partNum;
+    //                 // printf("Added partNum: %i to total: %i\n", partNum, total);
+    //             };
+    //             j += 1;
+    //         } else if (isdigit(fullFile[i][j])) {
+    //             // printf("%c\n", fullFile[i][j]);
+    //             partNum = (fullFile[i][j] - 48);
+    //             // printf("Partnum: %i\n", partNum);
+    //             if(checkSymbol(i, j, 1, fullFile)) {
+    //                 total += partNum;
+    //                 // printf("Added partNum: %i to total: %i\n", partNum, total);
+    //             };
+    //         } else {
+    //             partNum = 0;
+    //             continue;
+    //         };
+
+    //         // printf("partNum: %i", partNum);
+    //         // printf(" Subtotal: %i\n", total);
+
+    //     };
+
+    // };
+
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
-            // printf("Checking %c\n", fullFile[i][j]);
-            if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1]) && isdigit(fullFile[i][j+2])) {
-                partNum = (fullFile[i][j] - 48) * 100 + (fullFile[i][j+1] - 48) * 10 + (fullFile[i][j+2] - 48);
-                // printf("Partnum: %i\n", partNum);
-                if(checkSymbol(i, j, 3, fullFile)) {
-                    total += partNum;
-                    // printf("Added partNum: %i to total: %i\n", partNum, total);
-                };
-                j += 2;
-            } else if (isdigit(fullFile[i][j]) && isdigit(fullFile[i][j+1])) {
-                partNum = (fullFile[i][j] - 48) * 10 + (fullFile[i][j+1] - 48);
-                // printf("Partnum: %i\n", partNum);
-                if(checkSymbol(i, j, 2, fullFile)) {
-                    total += partNum;
-                    // printf("Added partNum: %i to total: %i\n", partNum, total);
-                };
-                j += 1;
-            } else if (isdigit(fullFile[i][j])) {
-                // printf("%c\n", fullFile[i][j]);
-                partNum = (fullFile[i][j] - 48);
-                // printf("Partnum: %i\n", partNum);
-                if(checkSymbol(i, j, 1, fullFile)) {
-                    total += partNum;
-                    // printf("Added partNum: %i to total: %i\n", partNum, total);
-                };
-            } else {
-                partNum = 0;
-                continue;
+
+            if (fullFile[i][j] == '*') {
+                // printf("Found a * at i: %i, j: %i\n", i, j);
+                printf("total: %i\n", checkDigit(i, j, fullFile));
+                total += checkDigit(i, j, fullFile);
             };
-
-            // printf("partNum: %i", partNum);
-            // printf(" Subtotal: %i\n", total);
-
         };
-
     };
 
     printf("Total parts near symbols: %i", total);
