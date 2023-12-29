@@ -1,135 +1,185 @@
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <sys/types.h>
+#include <time.h>
+#include <assert.h>
+#include <stdbool.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 
+void bad_input()
+{
+    printf("The input file isn't valid!\n");
+    exit(-1);
+}
 
-void setMaps(char *buffer, int *arr1, int *arr2) {
+bool eol(char c) {return !c || c == '\n' || c == '\r';}
 
-    int k = 0;
-    int tmp[3] = {0};
+#define MAX_LINE_NUMBER 300
+#define MAX_LINE_SIZE 300
 
-    for (int j = 0; j < 256; j++) {
-
-        if (k >= 3) { break; };
-        if (buffer[j] == ' ') {
-            k++;
-        }
-        else if (isdigit(buffer[j])) {
-            tmp[k] = tmp[k] * 10 + (buffer[j] - '0');
-        };
-
-    };
-
-    for (int j = 0; j < tmp[2]; j++) {
-        
-        arr2[(tmp[1]+j)] = arr1[tmp[0]+j];
-        printf("arr[%i] changed to %i\n", tmp[1]+j, tmp[0]+j);
-    };
-
+struct Range
+{
+    int64_t start, len;
+    bool guard;
 };
 
-int main() {
+struct Range* ranges;
+uint64_t capacity;
+uint64_t length;
 
-    FILE *fptr;
+void pushback(int64_t start, int64_t len, bool guard)
+{
+    if (capacity == length) {
+        capacity *= 2;
+        ranges = realloc(ranges, capacity*sizeof(struct Range));
+    }
+    ranges[length].start = start;
+    ranges[length].len = len;
+    ranges[length].guard = guard;
+    length++;
+}
 
-    const int beginSeedMap = 3;
-    const int beginSoilMap = 7;
-    const int beginFertMap = 12;
-    const int beginWaterMap = 18;
-    const int beginLightMap = 22;
-    const int beginTempMap = 27;
-    const int beginHumMap = 31;
-    const int eof = 33;
+int main(int argc, char**argv)
+{
+    // file parsing
+    if(argc<2) bad_input(); // exit execution
+
+    FILE* input_file = fopen(argv[1], "r");
+    if(!input_file) bad_input(); // exit execution
+
+    char input[MAX_LINE_NUMBER][MAX_LINE_SIZE];
+    int line_nb = 0;
+
+    while(line_nb<1000 && fgets(input[line_nb], MAX_LINE_SIZE, input_file)) {
+		line_nb++;
+	};
+
+    fclose(input_file);
+    
+    // For the sake of speed, what follows supposes that the input is valid
+    clock_t start_point = clock();
+
+    uint64_t output1 = 0, output2 = 0;
+
+    // PART 1
+
+    int64_t ids[20];
+    char guards[20];
+
+    int seed_nb = 0;
+    char* ptr = input[0] + 7; //ptr initiated to the start of first seed number
+
+    while(!eol(*ptr)) {
+        ids[seed_nb] = strtoll(ptr, &ptr, 10);
+        seed_nb++;
+		ptr++;
+    }
 
 
-    // Opening data file in read mode
-    fptr = fopen("data.txt", "r");
-
-    int least = 999999999;
-    int seedsList[4] = {0};
-    int seeds[100];
-    int soil[100];
-    int fert[100];
-    int water[100];
-    int light[100];
-    int temp[100];
-    int hum[100];
-    int loc[100];
-
-    for (int i = 0; i < 100; i++) {
-        seeds[i] = i;
-        soil[i] = i;
-        fert[i] = i;
-        water[i] = i;
-        light[i] = i;
-        temp[i] = i;
-        hum[i] = i;
-        loc[i] = i;
-        // printf("soil[%i] = %i\n", i, soil[i]);
-    };
-
-    char buffer[256];
-    // char fullFile[rows][columns];
-
-    int i = 0;
-
-    while(fgets(buffer, 256, fptr)) {
-        
-        if (i == 0) {
-            
-            int k = 0;
-            
-            for (int j = 0; j < 256; j++) {
-                // printf("buffer[%i]: %c\n", j , buffer[j]);
-                if (k >= 4) { break; };
-                if (isdigit(buffer[j])) {
-                    seedsList[k] = seedsList[k] * 10 + (buffer[j] - '0');
-                    // printf("seeds[%i]: %i and buffer was [%c]\n", k , seeds[k], buffer[j]);
-                    if (!isdigit(buffer[j-1])) {
-                        continue;
-                    }
-                    else {
-                        // printf("Incrementing k because isdigit(%c) = %i\n", buffer[j-1], isdigit(buffer[j-1]));
-                        k++;
-                    }
+    for (int i = 2; i < line_nb; i++)
+    {
+        ptr = input[i];
+        if (*ptr > '9' || *ptr < '0'){
+            if (*ptr < 'a') {
+                memset(guards, 0, seed_nb);
+                // printf("checking guards: %li and *ptr: %c\n", *guards, *ptr); 
                 }
-                else {
-                    // printf("Skipping char: %i\n", j);
-                    continue;
-                };
-
-            };
-
-        };
-
-        if (i >= beginSeedMap   && i < beginSoilMap  - 2)   setMaps(buffer, seeds, soil);
-        if (i >= beginSoilMap   && i < beginFertMap  - 2)   setMaps(buffer, soil, fert);
-        if (i >= beginFertMap   && i < beginWaterMap - 2)   setMaps(buffer, fert, water);
-        if (i >= beginWaterMap  && i < beginLightMap - 2)   setMaps(buffer, water, light);
-        if (i >= beginLightMap  && i < beginTempMap  - 2)   setMaps(buffer, light, temp);
-        if (i >= beginTempMap   && i < beginHumMap - 2)     setMaps(buffer, temp, hum);
-        if (i >= beginHumMap    && i < eof)                 setMaps(buffer, hum, loc);
-        
-
-        i++;
-
-    };
-
-    for (int i = 0; i < 4; i++) {
-        int tmp;
-        tmp = loc[hum[temp[light[water[fert[soil[seedsList[i]]]]]]]];
-        printf("Seed %i, soil %i, fertilizer %i, water %i, light %i, temperature %i, humidity %i, location %i\n",
-            seedsList[i], seedsList[seeds[i]], fert[soil[seedsList[i]]], water[fert[soil[seedsList[i]]]], light[water[fert[soil[seedsList[i]]]]],
-            temp[light[water[fert[soil[seedsList[i]]]]]], hum[temp[light[water[fert[soil[seedsList[i]]]]]]], tmp);
-
-        if (tmp < least) {
-            least = tmp;
+            continue;
         }
-    };
+        
+        int64_t dest = strtoll(ptr, &ptr, 10);
+        int64_t src = strtoll(ptr+1, &ptr, 10);
+        int64_t len = strtoll(ptr+1, &ptr, 10);
+        
+		for (int k = 0; k < seed_nb; k++)
+        {
+            if (guards[k]) continue;
+            int64_t delta = ids[k] - src;
+            if (delta >= 0 && delta < len) {
+                ids[k] = dest + delta;
+                guards[k] = 1;
+            }
+        }
+    }
 
-    printf("Closest location at: %i\n", least);
+    output1 = ids[0];
+    for (int k = 0; k < seed_nb; k++)
+        output1 = output1 > ids[k] ? ids[k] : output1;
+    
+    clock_t end_point = clock();
 
-    fclose(fptr);
+    printf("PART 1 output : %"PRIu64"\n", output1);
+    printf("Time : %lf micro-seconds\n", (double)(end_point - start_point)/CLOCKS_PER_SEC*1000000.0);
+
+    // PART 2
+    /* i made a vector of ranges that get iterated over for each line of the input
+     * then each range get split if there is an intersection with the range given by the input
+     * each time a range is fully included in a range of the input, it is not ereased from the vector
+     * instead its length just get nullified, as erasing an element of a vector is slow
+     */
+
+    start_point = clock();
+    
+    ranges = malloc(2 * seed_nb * sizeof(struct Range));
+    capacity = 2 * seed_nb;
+    length = seed_nb / 2;
+
+    ptr = input[0] + 7;
+    for(int i = 0; i < seed_nb/2; i++) {
+        ranges[i].start = strtoll(ptr, &ptr, 10);
+        ranges[i].len = strtoll(ptr+1, &ptr, 10);
+    }
+
+    for (int i = 1; i < line_nb; i++)
+    {
+        ptr = input[i];
+        if (*ptr > '9' || *ptr < '0') {
+            for (int k = 0; k < length; k++) ranges[k].guard = false;
+            continue;
+        }
+
+        int64_t dest = strtoll(ptr, &ptr, 10);
+        int64_t src = strtoll(ptr+1, &ptr, 10);
+        int64_t len = strtoll(ptr+1, &ptr, 10);
+
+        for (int k = 0; k < length; k++)
+        {
+            if (ranges[k].guard || ranges[k].len <= 0) continue;
+            int64_t delta = ranges[k].start - src;
+
+            if (delta >= 0 && delta < len)
+            {
+                int64_t new_start = dest + delta;
+                int64_t new_len = len - delta <= ranges[k].len ? len - delta : ranges[k].len;
+                ranges[k].start += new_len;
+                ranges[k].len -= new_len;
+                pushback(new_start, new_len, true);
+            }
+
+            if (delta < 0 && -delta < ranges[k].len)
+            {
+                if (src + len < ranges[k].start + ranges[k].len) {
+                    pushback(dest, len, true);
+                    pushback(src + len, ranges[k].len + delta - len, false);
+                } else {
+                    pushback(dest, ranges[k].len + delta, true);
+                }
+                ranges[k].len = -delta;
+            }
+        }
+    }
+
+    output2 = INT64_MAX;
+    for (int k = 0; k < length; k++)
+        if (ranges[k].len > 0 && ranges[k].start < output2) output2 = ranges[k].start;
+
+    end_point = clock();
+
+    printf("PART 2 output : %"PRIu64"\n", output2);
+    printf("Time : %lf micro-seconds\n", (double)(end_point - start_point)/CLOCKS_PER_SEC*1000000.0);
+
     return 0;
-
-};
+}
